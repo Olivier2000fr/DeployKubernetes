@@ -1,0 +1,44 @@
+#cloud-config
+autoinstall:
+  version: 1
+  locale: fr_FR.UTF-8
+  keyboard:
+    layout: fr
+  network:
+    version: 2
+    ethernets:
+      ens33:
+        dhcp4: no
+        addresses: [10.33.62.10/24]  # Changez pour chaque VM
+        routes:
+          - to: default
+            via: 10.33.62.2
+        nameservers:
+          addresses: [8.8.8.8, 8.8.4.4]
+  identity:
+    hostname: k8s-master-01  # À changer pour chaque VM
+    username: k8sadmin
+    password: "$6$u3LDl88j0SxqVW7t$0dRww7K.nxgjKW94JKUDbczX3Mpy.aSrd/u0iNgpBR9xyGWZneR.bWKIoSgNq7epC1IY3VfoTZd8Mmzz97L0j/"
+  ssh:
+    install-server: yes
+    allow-pw: yes
+  storage:
+    layout:
+      name: lvm
+  packages:
+    - openssh-server
+    - curl
+    - vim
+    - net-tools
+  late-commands:
+    - echo 'k8sadmin ALL=(ALL) NOPASSWD:ALL' > /target/etc/sudoers.d/k8sadmin
+    - curtin in-target --target=/target -- chmod 440 /etc/sudoers.d/k8sadmin
+    # Désactivation du swap
+    - curtin in-target --target=/target -- swapoff -a
+    - curtin in-target --target=/target -- sed -i '/ swap / s/^/#/' /etc/fstab
+    # Configuration réseau statique (optionnel)
+    - curtin in-target --target=/target -- systemctl disable snapd
+  user-data:
+    disable_root: false
+    timezone: Europe/Paris
+
