@@ -1,0 +1,22 @@
+# Fichier : nginx-deployment.yaml
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: nginx-web
+  labels:
+    app: web
+spec:
+  replicas: 3 # Trois copies de l'application
+  selector:
+    matchLabels:
+      app: web
+  template:
+    metadata:
+      labels:
+        app: web
+    spec:
+      containers:
+      - name: nginx
+        image: nginx:latest # Utilise l'image Nginx officielle
+        ports:
+        - containerPort: 80 # Le conteneur écoute sur le port 80

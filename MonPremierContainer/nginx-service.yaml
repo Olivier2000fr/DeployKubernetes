@@ -1,0 +1,14 @@
+# Fichier : nginx-service.yaml
+apiVersion: v1
+kind: Service
+metadata:
+  name: nginx-exposure
+spec:
+  selector:
+    app: web # Le sélecteur cible tous les Pods ayant le label 'app: web' (les Pods Nginx)
+  ports:
+    - protocol: TCP
+      port: 80 # Port interne du Service
+      targetPort: 80 # Port écouté par le conteneur Nginx (80)
+      nodePort: 30080 # Port externe (facultatif, mais permet de choisir un port stable dans la plage 30000-32767)
+  type: NodePort # Expose le Service sur un port de chaque nœud
