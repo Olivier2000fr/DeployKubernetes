@@ -215,3 +215,45 @@ kube-system    kube-proxy-w9xkl                        1/1     Running   0      
 kube-system    kube-scheduler-k8s-master-01            1/1     Running   0          3m16s
 k8sadmin@k8s-master-01:~$
 ```
+
+### Étape 4 : Préparer son client Kube afin de ne pas utiliser les VM 
+
+Nous allos utiliser les services Linux de Windows (WSL) directement pour passer des commandes Kube et ne pas utiliser de connexion aux VM's Déployées.
+
+Pour cela, nous devons installer Kubeadm directement dans WSL et lui donner la configuraiton du master node
+
+Il faut se connecter dans WSL et passer les commandes suivantes :
+
+```bash
+# installation de Kubectl
+curl -LO "https://dl.k8s.io/release/$(curl -L -s https://dl.k8s.io/release/stable.txt)/bin/linux/amd64/kubectl"
+chmod +x kubectl
+# Déplacement vers /usr/local
+sudo mv kubectl /usr/local/bin/
+# Activer l'auto completion
+echo 'source <(kubectl completion bash)' >> ~/.bashrc
+source ~/.bashrc
+# Création du répertoire de configuration
+mkdir -p ~/.kube
+cd ~/.kube
+```
+
+Maintenant il va falloir aller récupérer le fichier de configuration sur le master node
+```
+olivier@DESKTOP-O96A07T:~/.kube$ sftp k8sadmin@10.33.62.10
+k8sadmin@10.33.62.10's password:
+Connected to 10.33.62.10.
+sftp> cd .kube
+sftp> ls
+cache   config
+sftp> get config
+Fetching /home/k8sadmin/.kube/config to config
+config                                                                                100% 5647     3.9MB/s   00:00
+sftp> bye
+```
+
+et on peut vérifier que tout est bon !!!
+
+```bash
+kubectl get nodes
+```
