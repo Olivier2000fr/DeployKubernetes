@@ -1,0 +1,31 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: mon-site-deployment
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: mon-site
+  template:
+    metadata:
+      labels:
+        app: mon-site
+    spec:
+      containers:
+      - name: mon-site
+        image: guyoto/mon-site-web:1.0  # Utilise l’image poussée
+        ports:
+        - containerPort: 80
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: mon-site-service
+spec:
+  type: LoadBalancer  # Utilise NodePort si tu n’as pas de LoadBalancer
+  ports:
+  - port: 80
+    targetPort: 80
+  selector:
+    app: mon-site

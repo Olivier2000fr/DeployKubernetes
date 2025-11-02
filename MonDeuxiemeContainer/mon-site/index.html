@@ -1,0 +1,195 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Page Dynamique Aléatoire</title>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg-color: #e0e5ec;
+            --primary-color: #6a5acd; /* Un violet améthyste */
+            --text-color: #333;
+            --light-shadow: #ffffff;
+            --dark-shadow: #a3b1c6;
+            --accent-color: #ff6f61; /* Un rouge corail pour l'accentuation */
+        }
+
+        body {
+            font-family: 'Montserrat', sans-serif;
+            margin: 0;
+            padding: 20px;
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            overflow: hidden; /* Pour gérer l'animation de fond */
+        }
+
+        .container {
+            background: var(--bg-color);
+            padding: 40px;
+            border-radius: 25px;
+            box-shadow: 8px 8px 15px var(--dark-shadow), -8px -8px 15px var(--light-shadow);
+            max-width: 800px;
+            text-align: center;
+            position: relative;
+            z-index: 1; /* Assure que le contenu est au-dessus de l'animation */
+        }
+
+        h1 {
+            color: var(--primary-color);
+            font-size: 2.5em;
+            margin-bottom: 20px;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.1);
+        }
+
+        p {
+            line-height: 1.8;
+            margin-bottom: 25px;
+            font-size: 1.1em;
+            color: #555;
+        }
+
+        .refresh-btn {
+            background: var(--primary-color);
+            color: var(--light-shadow);
+            border: none;
+            padding: 15px 30px;
+            border-radius: 50px;
+            font-size: 1.1em;
+            font-weight: bold;
+            cursor: pointer;
+            box-shadow: 5px 5px 10px var(--dark-shadow), -5px -5px 10px var(--light-shadow);
+            transition: all 0.2s ease-in-out;
+            outline: none;
+        }
+
+        .refresh-btn:hover {
+            box-shadow: inset 2px 2px 5px var(--dark-shadow), inset -2px -2px 5px var(--light-shadow);
+            color: var(--accent-color);
+        }
+
+        .refresh-btn:active {
+            box-shadow: inset 1px 1px 2px var(--dark-shadow), inset -1px -1px 2px var(--light-shadow);
+            transform: translateY(2px);
+        }
+
+        /* Animation de fond */
+        .background-animation {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            overflow: hidden;
+            z-index: 0;
+        }
+
+        .circle {
+            position: absolute;
+            border-radius: 50%;
+            opacity: 0.6;
+            animation: moveCircles 15s infinite ease-in-out;
+        }
+
+        .circle:nth-child(1) {
+            background: var(--accent-color);
+            width: 150px;
+            height: 150px;
+            left: 10%;
+            top: 10%;
+            animation-delay: 0s;
+        }
+        .circle:nth-child(2) {
+            background: var(--primary-color);
+            width: 100px;
+            height: 100px;
+            left: 70%;
+            top: 50%;
+            animation-delay: 5s;
+        }
+        .circle:nth-child(3) {
+            background: var(--dark-shadow);
+            width: 200px;
+            height: 200px;
+            left: 40%;
+            top: 80%;
+            animation-delay: 10s;
+        }
+        .circle:nth-child(4) {
+            background: var(--primary-color);
+            width: 80px;
+            height: 80px;
+            left: 20%;
+            top: 60%;
+            animation-delay: 3s;
+        }
+        .circle:nth-child(5) {
+            background: var(--accent-color);
+            width: 120px;
+            height: 120px;
+            left: 80%;
+            top: 20%;
+            animation-delay: 8s;
+        }
+
+        @keyframes moveCircles {
+            0% { transform: translate(0, 0) scale(1); opacity: 0.6; }
+            25% { transform: translate(20vw, 10vh) scale(1.1); opacity: 0.7; }
+            50% { transform: translate(5vw, 30vh) scale(0.9); opacity: 0.5; }
+            75% { transform: translate(30vw, -10vh) scale(1.2); opacity: 0.8; }
+            100% { transform: translate(0, 0) scale(1); opacity: 0.6; }
+        }
+    </style>
+</head>
+<body>
+    <div class="background-animation">
+        <div class="circle"></div>
+        <div class="circle"></div>
+        <div class="circle"></div>
+        <div class="circle"></div>
+        <div class="circle"></div>
+    </div>
+
+    <div class="container">
+        <h1>Bienvenue dans notre univers dynamique !</h1>
+        <p id="randomText"></p>
+        <button class="refresh-btn" onclick="generateRandomText()">Générer un autre mystère</button>
+    </div>
+
+    <script>
+        const texts = [
+            "Au cœur de la forêt enchantée, les murmures du vent racontaient des histoires oubliées, tissant des liens entre le passé et l'éternité. Chaque feuille dansait au rythme d'une mélodie invisible, invitant à la contemplation et au rêve éveillé. C'est ici que les secrets de la nature prenaient vie, à l'abri des regards indiscrets. Les rayons du soleil filtraient à travers la canopée, peignant le sol de taches lumineuses, tandis que l'air vibrait d'une énergie sereine.",
+            "L'exploration spatiale continue de fasciner, repoussant sans cesse les limites de notre compréhension. Des sondes lointaines aux télescopes géants, chaque découverte ouvre une nouvelle fenêtre sur l'univers. Les galaxies lointaines, les nébuleuses colorées et les planètes inexplorées nous rappellent l'immensité et la complexité de ce qui nous entoure. L'humanité, petite dans cet océan cosmique, aspire toujours à percer ses mystères.",
+            "La ville s'éveillait doucement, ses gratte-ciel perçant la brume matinale comme des sentinelles silencieuses. Le ballet des premières lumières et des ombres portait la promesse d'une nouvelle journée, remplie d'opportunités et de défis. Les rues, encore calmes, allaient bientôt vibrer au son des pas et des conversations, chaque coin de rue abritant une nouvelle histoire. Un café fumant, une rencontre inattendue, le rythme incessant de la vie urbaine.",
+            "Dans le silence de la nuit, les idées les plus brillantes prennent souvent leur envol. C'est un moment propice à la réflexion, où l'esprit vagabonde librement, détaché des contraintes du quotidien. Les étoiles scintillantes au-dessus offrent une toile de fond infinie à l'imagination, invitant à l'innovation et à la créativité. Chaque rêve, chaque pensée, est une graine plantée dans le jardin de l'avenir.",
+            "Les chefs-d'œuvre de l'art traversent les âges, témoignant de la richesse de l'esprit humain. Chaque coup de pinceau, chaque note de musique, chaque mot écrit est une expression unique d'émotion et de vision. Ils nous parlent à travers le temps, nous connectent à des cultures lointaines et nous rappellent la beauté intrinsèque de la création. L'art est un miroir de l'âme, reflétant nos espoirs et nos peurs.",
+            "L'océan, vaste et mystérieux, recèle d'innombrables merveilles et d'espèces insoupçonnées. Ses profondeurs inexplorées abritent des écosystèmes complexes et fragiles, essentiels à l'équilibre de notre planète. Le ressac des vagues sur le rivage est une mélodie ancestrale, apaisante et puissante à la fois. Chaque plongée est une invitation à la découverte, un voyage au cœur d'un monde parallèle et fascinant.",
+            "L'apprentissage est une quête sans fin, un chemin parsemé de découvertes et d'émerveillement. Chaque nouvelle compétence acquise, chaque concept maîtrisé, élargit nos horizons et nourrit notre curiosité. Que ce soit à travers les livres, les voyages ou les échanges, le savoir est une lumière qui éclaire notre parcours. Il nous pousse à grandir, à évoluer, et à mieux comprendre le monde qui nous entoure.",
+            "Les innovations technologiques transforment notre quotidien à une vitesse vertigineuse. Elles ouvrent des portes vers des possibilités autrefois inimaginables, de la communication instantanée aux avancées médicales révolutionnaires. Chaque ligne de code, chaque circuit intégré est une brique dans la construction d'un avenir en constante évolution. Ces outils, conçus par l'ingéniosité humaine, redéfinissent notre interaction avec le monde.",
+            "Le voyage est bien plus qu'un simple déplacement ; c'est une exploration de soi et du monde. Chaque nouvelle destination offre une perspective différente, une immersion dans d'autres cultures et d'autres paysages. Les rencontres, les saveurs, les sons, tout contribue à enrichir notre expérience. Qu'il soit lointain ou proche, chaque voyage est une aventure qui marque l'esprit et nourrit l'âme.",
+            "La nature offre un spectacle grandiose et perpétuel, un cycle infini de vie, de croissance et de renouvellement. Des majestueuses montagnes aux vastes plaines, des déserts arides aux forêts luxuriantes, chaque écosystème est une œuvre d'art complexe. Observer la faune et la flore, c'est se reconnecter à l'essentiel, se souvenir de notre place dans l'équilibre du vivant. Une source inépuisable d'inspiration et de sérénité."
+        ];
+
+        function generateRandomText() {
+            const randomIndex = Math.floor(Math.random() * texts.length);
+            document.getElementById('randomText').innerText = texts[randomIndex];
+            applyButtonAnimation();
+        }
+
+        function applyButtonAnimation() {
+            const button = document.querySelector('.refresh-btn');
+            button.classList.add('pulse'); // Ajoute une classe pour l'animation
+            setTimeout(() => {
+                button.classList.remove('pulse'); // Retire la classe après l'animation
+            }, 500); // Durée de l'animation
+        }
+
+        // Génère un texte au chargement initial
+        window.onload = generateRandomText;
+    </script>
+</body>
+</html>
