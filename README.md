@@ -126,13 +126,17 @@ Ne pas oublier Redimensionner la RAM (Applicable aux Workers uniquement)
 Après avoir éteint les VMs, vous pouvez réduire la RAM des Workers à 2 Go.
 
 rajout dans les fichier /etc/hosts des informations sur les IP et les neouds
-
+```bash
 10.33.62.10  k8s-master-01
 10.33.62.11  k8s-worker-01
 10.33.62.12  k8s-worker-02
+```
 
 ### Étape 2 : Installation de Kubernetes
 
+A faire sur toutes les VM's :
+- installation de containerd
+- installation de kubelet et kubeadm
 
 ```bash
 # Installation de containerd
@@ -157,8 +161,9 @@ sudo apt-mark hold kubelet kubeadm kubectl
 ```
 
 
-5. Initialisation du cluster (sur le Master uniquement)
+### Étape 3 : Initialisation du cluster 
 
+Sur le Master node only
 ```bash
 # Initialisation avec kubeadm
 sudo kubeadm init --pod-network-cidr=10.244.0.0/16
@@ -168,5 +173,45 @@ sudo cp -i /etc/kubernetes/admin.conf $HOME/.kube/config
 sudo chown $(id -u):$(id -g) $HOME/.kube/config
 # Installation d'un plugin réseau (Flannel)
 kubectl apply -f https://github.com/flannel-io/flannel/releases/latest/download/kube-flannel.yml
+```
 Important : Notez la commande kubeadm join qui s'affiche à la fin, vous en aurez besoin pour les workers !
+Mon cas : 
+`kubeadm join 10.33.62.10:6443 --token qpz0dd.3gansvvlbqkkm6rk \ `<br>
+`        --discovery-token-ca-cert-hash sha256:076dc1889c76fab79b9eff1cdeec8d71f5eed9534e86c443d83cbdcabe80ae23`
+
+
+Ensuite, il faut se connecter sur chaque worker et lancer la commande précédente en sudo.
+`sudo kubeadm join <MASTER-IP>:6443 --token <TOKEN> --discovery-token-ca-cert-hash sha256:<HASH>`
+
+Maintenant on peut vérifier sur le master à l'aide des commandes suivantes : 
+
+```bash
+# Installation de containerd
+kubectl get nodes
+kubectl get pods -A
+```
+
+voici un exemple de retour : 
+
+```
+k8sadmin@k8s-master-01:~$ kubectl get nodes
+NAME            STATUS   ROLES           AGE     VERSION
+k8s-master-01   Ready    control-plane   3m12s   v1.28.15
+k8s-worker-01   Ready    <none>          55s     v1.28.15
+k8s-worker-02   Ready    <none>          20s     v1.28.15
+k8sadmin@k8s-master-01:~$ kubectl get pods -A
+NAMESPACE      NAME                                    READY   STATUS    RESTARTS   AGE
+kube-flannel   kube-flannel-ds-t4vz4                   1/1     Running   0          62s
+kube-flannel   kube-flannel-ds-w4lfj                   1/1     Running   0          27s
+kube-flannel   kube-flannel-ds-xvbqt                   1/1     Running   0          118s
+kube-system    coredns-5dd5756b68-2tcw9                1/1     Running   0          3m
+kube-system    coredns-5dd5756b68-tzjvm                1/1     Running   0          3m
+kube-system    etcd-k8s-master-01                      1/1     Running   0          3m16s
+kube-system    kube-apiserver-k8s-master-01            1/1     Running   0          3m16s
+kube-system    kube-controller-manager-k8s-master-01   1/1     Running   0          3m17s
+kube-system    kube-proxy-2q9pb                        1/1     Running   0          3m
+kube-system    kube-proxy-6m4r2                        1/1     Running   0          27s
+kube-system    kube-proxy-w9xkl                        1/1     Running   0          62s
+kube-system    kube-scheduler-k8s-master-01            1/1     Running   0          3m16s
+k8sadmin@k8s-master-01:~$
 ```
