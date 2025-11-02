@@ -1,6 +1,6 @@
-# 🚀 Déploiement Automatisé d'un Cluster Kubernetes Minimal
+# 🚀 Déploiement Automatisé d'une VM Ubuntu afin d'inster 1 cluster K8s
 
-**Objectif** : Ce projet vise à automatiser le déploiement d'un cluster Kubernetes minimal (1 nœud maître + 2 nœuds workers) destiné à un environnement de test fonctionnel, et à préparer l'environnement pour le déploiement de vos premiers conteneurs.
+**Objectif** : Ce projet vise montrer le déploiement d'un cluster Kubernetes minimal (1 nœud maître + 2 nœuds workers) destiné à un environnement de test fonctionnel, et à préparer l'environnement pour le déploiement de vos premiers conteneurs.
 
 ---
 
@@ -41,7 +41,7 @@ L'environnement utilise un réseau privé NAT configuré dans VMware, basé sur 
 1.  **Logiciel de Virtualisation :**
     * **VMware Workstation Pro** est recommandé.
 2.  **Image ISO :**
-    * **Ubuntu Server 22.04 LTS** (ou version ultérieure).
+    * **Ubuntu Server 24.04 LTS** (ou version ultérieure).
 3.  **Fichiers de Déploiement Automatisé :**
     * Les fichiers `user-data` et `meta-data` pour l'Autoinstallation sont disponibles dans le répertoire : **`UbuntuDeploymentTemplate`**.
     * **Clé d'Automatisation :** L'utilisateur de connexion automatique est `k8sadmin` et le mot de passe est défini via un hachage SHA-512 dans le fichier `user-data`.
@@ -240,7 +240,7 @@ cd ~/.kube
 
 Maintenant il va falloir aller récupérer le fichier de configuration sur le master node
 ```
-olivier@DESKTOP-O96A07T:~/.kube$ sftp k8sadmin@10.33.62.10
+sftp k8sadmin@10.33.62.10
 k8sadmin@10.33.62.10's password:
 Connected to 10.33.62.10.
 sftp> cd .kube

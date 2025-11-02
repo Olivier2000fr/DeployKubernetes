@@ -147,3 +147,33 @@ kubectl apply -f deployment.yaml
 ```
 
 et ensuite, on peut manipuler le container comme vu dans le premier exemple.
+
+## Essayons de comprendre comment fonctionne une image Docker
+
+Voici son contenu : 
+```bash
+FROM nginx:alpine
+COPY . /usr/share/nginx/html
+EXPOSE 80
+```
+
+`FROM nginx:alpine`
+- Rôle : Définit l’image de base utilisée pour construire ton conteneur.
+- :alpine : Spécifie une version légère de cette image, basée sur la distribution Linux Alpine. Cela réduit la taille du conteneur et améliore sa sécurité.
+
+
+`COPY . /usr/share/nginx/html`
+- Rôle : Copie les fichiers de ton dossier local (.) vers un dossier spécifique dans le conteneur.
+- Détails :
+  - . : Représente le dossier courant (où se trouve ton Dockerfile et les fichiers de ton site, comme index.html). 
+  - /usr/share/nginx/html : Dossier par défaut où Nginx cherche les fichiers à servir (racine du site web).
+
+
+`EXPOSE 80`
+- Rôle : Documente le port sur lequel le conteneur écoutera.
+- Détails :
+  - 80 : Port standard pour le trafic HTTP.
+  - Attention : EXPOSE est une déclaration informative pour les utilisateurs du conteneur. Pour que le port soit effectivement accessible depuis l’extérieur, il faut aussi utiliser l’option -p lors du docker run (ex: -p 8080:80).
+
+Si à chaque version de code HTML nous sommes obligés de recréer un container, nous ne sommes pas sortis des ronces !!!!
+
